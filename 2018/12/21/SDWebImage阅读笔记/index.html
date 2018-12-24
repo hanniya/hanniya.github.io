@@ -1,4 +1,92 @@
-<!DOCTYPE html><html lang="Chinese"><head><meta name="generator" content="Hexo 3.8.0"><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> SDWebImage阅读笔记 · Hanniya Here</title><meta name="description" content="SDWebImage阅读笔记 - Hanniya Zhang"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/icon2.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="search" type="application/opensearchdescription+xml" href="http://hanniyaz.com/atom.xml" title="Hanniya Here"></head><body><div class="wrap"><header><a href="/" class="logo-link"><img src="/icon2.png" alt="logo"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://www.weibo.com/u/1782773397/" target="_blank" class="nav-list-link">WEIBO</a></li><li class="nav-list-item"><a href="https://github.com/hanniya" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><main class="container"><div class="post"><article class="post-block"><h1 class="post-title">SDWebImage阅读笔记</h1><div class="post-info">Dec 21, 2018</div><div class="post-content"><h1 id="SDWebImage-v3-7-6-源码学习"><a href="#SDWebImage-v3-7-6-源码学习" class="headerlink" title="# SDWebImage(v3.7.6) 源码学习"></a># SDWebImage(v3.7.6) 源码学习</h1><p><strong>2018.9.24  HanniyaZhang</strong></p>
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+    <meta name="keywords" content="hexo, autumn">
+    <title>
+        Hanniya Here
+    </title>
+    <!-- favicon -->
+    
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/frontendsophie/hexo-theme-autumn@1.0.0/source/img/favicon.ico">
+    
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- highlight -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/github-gist.min.css">
+    <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+    <script>
+        hljs.initHighlightingOnLoad()
+    </script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/frontendsophie/hexo-infinite-scroll@1.0.0/dist/hexo-infinite-scroll.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/frontendsophie/hexo-infinite-scroll@1.0.0/dist/hexo-infinite-scroll.min.js"></script>
+    <script>
+        infiniteScroll()
+
+        // for mobile menu
+        $(function () {
+            $('.social-button').click(function () {
+                if ($('.social-links').hasClass('hide-links')) {
+                    $('.social-links').removeClass('hide-links')
+                } else {
+                    $('.social-links').addClass('hide-links')
+                }
+            })
+        })
+    </script>
+</head>
+
+    <body style="background: url(https://cdn.jsdelivr.net/gh/frontendsophie/hexo-theme-autumn@1.0.0/source/img/button-bg.png) #f3f3f3">
+        <div class="container">
+            <header class="header">
+    <h1 class="title">
+        <a href="/" class="logo">
+            Hanniya Here
+        </a>
+    </h1>
+    <h2 class="desc">
+        Hanniya wants to share these with u ——!!
+    </h2>
+
+    <nav class="links">
+        <button class="social-button">
+            menu
+        </button>
+        <ul class="social-links hide-links">
+            
+                <li>
+                    <a href="https://github.com/FrontendSophie">
+                        Github
+                    </a>
+                </li>
+                
+                <li>
+                    <a href="https://www.linkedin.com/in/frontendsophie/">
+                        LinkedIn
+                    </a>
+                </li>
+                
+        </ul>
+    </nav>
+</header>
+                <main class="main">
+                    <article class="post">
+    
+            <h2 class="post-title">
+                SDWebImage阅读笔记
+            </h2>
+            <ul class="post-date">
+                <li>
+                    2018-12-21
+                </li>
+                <li>
+                    Hanniya Zhang
+                </li>
+            </ul>
+            <div class="post-content">
+                <h1 id="SDWebImage-v3-7-6-源码学习"><a href="#SDWebImage-v3-7-6-源码学习" class="headerlink" title="# SDWebImage(v3.7.6) 源码学习"></a># SDWebImage(v3.7.6) 源码学习</h1><p><strong>2018.9.24  HanniyaZhang</strong></p>
 <p>[TOC]</p>
 <h2 id="一、-使用"><a href="#一、-使用" class="headerlink" title="一、 使用"></a>一、 使用</h2><h3 id="1-使用-UIImageView-WebCache"><a href="#1-使用-UIImageView-WebCache" class="headerlink" title="1. 使用 UIImageView+WebCache"></a>1. 使用 UIImageView+WebCache</h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[cell.imageView sd_setImageWithURL:[<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://www.domain.com/path/to/image.jpg"</span>] placeholderImage:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@"placeholder.png"</span>]];</span><br></pre></td></tr></table></figure>
 <p>在 block 中得到图片下载进度和图片加载完成（下载完成或者读取缓存）的回调，如果你在图片加载完成前取消了请求操作，就不会收到成功或失败的回调<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[cell.imageView sd_setImageWithURL:[<span class="built_in">NSURL</span> URLWithString:<span class="string">@"http://www.domain.com/path/to/image.jpg"</span>]</span><br><span class="line">                  placeholderImage:[<span class="built_in">UIImage</span> imageNamed:<span class="string">@"placeholder.png"</span>]</span><br><span class="line">                         completed:^(<span class="built_in">UIImage</span> *image, <span class="built_in">NSError</span> *error, SDImageCacheType cacheType, <span class="built_in">NSURL</span> *imageURL) &#123;</span><br><span class="line">                                ... completion code here ...</span><br><span class="line">                             &#125;];</span><br></pre></td></tr></table></figure></p>
@@ -163,4 +251,36 @@
 <li>-&gt; LRU  -&gt;  LRU+FIFO</li>
 <li>缓存模糊匹配<br>针对同一图片，不同大小的请求。如果缓存中有更大的图片，也视为命中缓存。</li>
 </ol>
-</div></article></div></main><footer><div class="paginator"><a href="/2018/12/21/test-my-site/" class="next">NEXT</a></div><div class="copyright"><p>© 2015 - 2018 <a href="http://hanniyaz.com">Hanniya Zhang</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/pinggod/hexo-theme-apollo" target="_blank">hexo-theme-apollo</a>.</p></div></footer></div><script async src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML" integrity="sha384-crwIf/BuaWM9rM65iM+dWFldgQ1Un8jWZMuh3puxb8TOY9+linwLoI7ZHZT+aekW" crossorigin="anonymous"></script></body></html>
+
+            </div>
+</article>
+
+                </main>
+                <aside class="aside">
+                    <section class="aside-section">
+                        
+    <h1>Categories</h1>
+
+    
+
+                    </section>
+                    <section class="aside-section">
+                        
+    <h1>Archives</h1>
+
+    <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a></li></ul>
+
+
+                    </section>
+                    <section class="aside-section tag">
+                        
+    <h1>Tags</h1>
+
+    
+
+                    </section>
+                </aside>
+        </div>
+    </body>
+
+</html>
